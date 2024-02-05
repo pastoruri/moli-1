@@ -110,5 +110,10 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 if __name__ == '__main__':
     server_address = ('', 8000)
     httpd = HTTPServer(server_address, SimpleHTTPRequestHandler)
+    httpd.socket = ssl.wrap_socket(httpd.socket,
+                                server_side=True,
+                                certfile='cert.pem',
+                                keyfile='key.pem',
+                                ssl_version=ssl.PROTOCOL_TLS)
     print('Iniciando servidor en el puerto 8000...')
     httpd.serve_forever()
