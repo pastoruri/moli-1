@@ -1,9 +1,18 @@
 import os
 import urllib.request
 import socket
-
-from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
+from http.server import BaseHTTPRequestHandler, HTTPServer
+
+
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import firestore
+
+# Use a service account.
+cred = credentials.Certificate('credential/cedar-league-413120-9b8aa1847567.json')
+app = firebase_admin.initialize_app(cred)
+db = firestore.client()
 
 class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
     
@@ -76,7 +85,14 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 
                 # Procesa los datos según tus necesidades
                 # Aquí puedes realizar acciones adicionales si es necesario.
+                record = {
+                    "dni": dni,
+                    "id_participacion": dni + "_" + id_participation,
+                    "name": name,
+                    "photo_url": public_url
+                }
 
+                db.collection("moli_records").document("participaciones").set(record)
                 # Envía una respuesta al cliente con la URL pública
                 response_data = {'status': 'success', 'message': 'Datos recibidos y procesados correctamente', 'public_url': public_url}
                 self.send_response(200)
