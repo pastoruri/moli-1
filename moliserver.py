@@ -87,12 +87,11 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
                 # Aquí puedes realizar acciones adicionales si es necesario.
                 record = {
                     "dni": dni,
-                    "id_participacion": dni + "_" + id_participation,
                     "name": name,
                     "photo_url": public_url
                 }
 
-                db.collection("moli_records").document("participaciones").set(record)
+                db.collection("moli_records").document(dni + "_" + id_participation).set(record)
                 # Envía una respuesta al cliente con la URL pública
                 response_data = {'status': 'success', 'message': 'Datos recibidos y procesados correctamente', 'public_url': public_url}
                 self.send_response(200)
