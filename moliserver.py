@@ -6,29 +6,31 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 
 class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
-
+    
     def do_GET(self):
         # Obtener la ruta y el código de la URL
+
         path_parts = self.path.split('/')
         if len(path_parts) == 3 and path_parts[1] == 'images':
-            code = path_parts[2].split('.')[0]
-            image_filename = os.path.join('images', '{}.jpg'.format(code))
-            # Verificar si la imagen existe
-            if os.path.exists(image_filename):
-                self.send_response(200)
-                self.send_header('Content-type', 'image/jpeg')
-                self.end_headers()
-                # Leer y enviar la imagen como respuesta a la solicitud GET
-                with open(image_filename, 'rb') as image_file:
-                    self.wfile.write(image_file.read())
-            else:
-                self.send_error(404, 'Imagen no encontrada')
+            self.handle_retrieve(path_parts)
+            
         else:
             # Respuesta predeterminada para otras solicitudes GET
-            self.send_response(404)
-            self.send_header('Ruta desconocida.')
+            self.send_error(404)
 
-
+    def handle_retrieve(self, path_parts):
+        code = path_parts[2].split('.')[0]
+        image_filename = os.path.join('images', '{}.jpg'.format(code))
+        # Verificar si la imagen existe
+        if os.path.exists(image_filename):
+            self.send_response(200)
+            self.send_header('Content-type', 'image/jpeg')
+            self.end_headers()
+            # Leer y enviar la imagen como respuesta a la solicitud GET
+            with open(image_filename, 'rb') as image_file:
+                self.wfile.write(image_file.read())
+        else:
+            self.send_error(404, 'Imagen no encontrada')
 
     def do_POST(self):
         if self.path == '/upload':
