@@ -14,8 +14,8 @@ httpd = HTTPServer(server_address, RedirectHandler)
 # Ruta a los certificados SSL para HTTPS
 httpd.socket = ssl.wrap_socket(httpd.socket,
                                server_side=True,
-                               certfile='path/to/cert.pem',
-                               keyfile='path/to/key.pem',
+                               certfile='cert.pem',
+                               keyfile='key.pem',
                                ssl_version=ssl.PROTOCOL_TLS)
 
 print('Servidor corriendo en https://localhost:443')
