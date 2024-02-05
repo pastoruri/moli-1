@@ -6,6 +6,30 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 
 class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
+
+    def do_GET(self):
+        # Obtener la ruta y el código de la URL
+        path_parts = self.path.split('/')
+        if len(path_parts) == 3 and path_parts[1] == 'images':
+            code = path_parts[2].split('.')[0]
+            image_filename = os.path.join('images', '{}.jpg'.format(code))
+            # Verificar si la imagen existe
+            if os.path.exists(image_filename):
+                self.send_response(200)
+                self.send_header('Content-type', 'image/jpeg')
+                self.end_headers()
+                # Leer y enviar la imagen como respuesta a la solicitud GET
+                with open(image_filename, 'rb') as image_file:
+                    self.wfile.write(image_file.read())
+            else:
+                self.send_error(404, 'Imagen no encontrada')
+        else:
+            # Respuesta predeterminada para otras solicitudes GET
+            self.send_response(404)
+            self.send_header('Ruta desconocida.')
+
+
+
     def do_POST(self):
         if self.path == '/upload':
             self.handle_upload()
@@ -43,7 +67,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
                 print('Imagen guardada en:', image_filename)
 
                 # Genera la URL pública del servidor
-                public_ip = 'https://e0f0-38-25-17-57.ngrok-free.app'
+                public_ip = '34.125.51.194'
                 public_url = 'http://{}:{}/images/{}_{}.jpg'.format(public_ip, self.server.server_port, dni,id_participation)
 
                 print('URL pública:', public_url)
