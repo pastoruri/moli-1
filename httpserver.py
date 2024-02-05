@@ -28,8 +28,8 @@ def run(server_class=HTTPServer, handler_class=RedirectHandler, port=443):
     # Configura aquí tu certificado y clave
     httpd.socket = ssl.wrap_socket(httpd.socket,
                                    server_side=True,
-                                   certfile='path/to/cert.pem',
-                                   keyfile='path/to/key.pem',
+                                   certfile='cert.pem',
+                                   keyfile='key.pem',
                                    ssl_version=ssl.PROTOCOL_TLS)
 
     print(f'Servidor corriendo en https://0.0.0.0:{port} y redirigiendo a http://localhost:8000')
